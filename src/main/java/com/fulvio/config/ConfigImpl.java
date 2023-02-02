@@ -16,6 +16,7 @@ import org.bukkit.util.Vector;
 import org.checkerframework.checker.units.qual.A;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -454,6 +455,22 @@ public class ConfigImpl implements Config {
     public ItemStack getItem(String path) {
         if (isItemStack(path)) return getItemStack(path);
         return new ItemBuilder(getConfig(path)).build();
+    }
+
+    public List<String> getInventoryArrangement(String path) {
+        List<String> arrangement = new ArrayList<>();
+
+        for (String row : config.getStringList("menu")) {
+            for (String slot : row.split(" ")) {
+                if (arrangement.size() > 53) break;
+                arrangement.add(slot);
+            }
+        }
+
+        while (arrangement.size() == 0 || arrangement.size() % 9 != 0)
+            arrangement.add("0");
+
+        return arrangement;
     }
 
 

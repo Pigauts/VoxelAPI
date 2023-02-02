@@ -25,4 +25,6 @@ public interface Config extends Configuration {
 
     public ItemStack getItem(String path);
 
+    List<String> getInventoryArrangement(String path);
+
 }

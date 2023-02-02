@@ -1,6 +1,6 @@
 package com.fulvio.API;
 
-import com.fulvio.Placeholder;
+import com.fulvio.placeholder.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;

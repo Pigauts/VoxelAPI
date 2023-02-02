@@ -1,4 +1,4 @@
-package com.fulvio;
+package com.fulvio.placeholder;
 
 public class Placeholder {
 
