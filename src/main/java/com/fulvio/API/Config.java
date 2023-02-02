@@ -9,10 +9,22 @@ import java.util.List;
 
 public interface Config extends Configuration {
 
+    void create();
+
+    void save();
+
+    boolean exists();
+
+    boolean isEmpty();
+
     Config getConfig(String path);
+
+    MenuConfig getMenuConfig(String path);
     String getColorString(String path);
 
     String getEnumString(String path);
+
+    List<String> getEnumList(String path);
 
     List<String> getColorList(String path);
 
@@ -23,8 +35,8 @@ public interface Config extends Configuration {
     Material getMaterial(String path);
     Material getMaterial(String path, Material def);
 
-    public ItemStack getItem(String path);
+    ItemStack getItem(String path);
 
-    List<String> getInventoryArrangement(String path);
+    ItemStack getCustomItem(String path);
 
 }

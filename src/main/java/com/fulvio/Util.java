@@ -8,6 +8,10 @@ public abstract class Util {
         return ChatColor.translateAlternateColorCodes('&', text);
     }
 
+    public static String enumFormat(String s) {
+        return s.toUpperCase().replace(" ", "_");
+    }
+
     public static <E extends Enum<E>> boolean isValidEnum(Class<E> enumClass, String enumName) {
         try {
             Enum.valueOf(enumClass, enumName);

@@ -33,4 +33,9 @@ public interface PluginUser {
         getPlayer().openInventory(inventory);
     }
 
+    default boolean performCommand(String command) {
+        return getPlayer().performCommand(command);
+    }
+
+
 }

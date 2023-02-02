@@ -1,7 +1,9 @@
 package com.fulvio.config;
 
 import com.fulvio.API.Config;
+import com.fulvio.API.MenuConfig;
 import com.fulvio.Util;
+import com.fulvio.VoxelAPI;
 import com.fulvio.item.ItemBuilder;
 import com.fulvio.number.Amount;
 import com.fulvio.number.Range;
@@ -9,23 +11,24 @@ import org.bukkit.*;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationOptions;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-import org.checkerframework.checker.units.qual.A;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class ConfigImpl implements Config {
 
-    private File file;
+    protected File file;
 
-    private ConfigurationSection config;
+    protected ConfigurationSection config;
 
     public ConfigImpl(File file) {
         this(file, YamlConfiguration.loadConfiguration(file));
@@ -407,8 +410,42 @@ public class ConfigImpl implements Config {
         config.setInlineComments(path, comments);
     }
 
+    public void create() {
+        if (!file.exists()) {
+            file.getParentFile().mkdirs();
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public void save() {
+        create();
+        if (config instanceof FileConfiguration fileConfig) {
+            try {
+                fileConfig.save(file);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public boolean exists() {
+        return file.exists();
+    }
+
+    public boolean isEmpty() {
+        return file.length() > 0;
+    }
+
     public Config getConfig(String path) {
         return new ConfigImpl(file, getConfigurationSection(path));
+    }
+
+    public MenuConfig getMenuConfig(String path) {
+        return new MenuConfigImpl(file, getConfigurationSection(path));
     }
 
     public String getColorString(String path) {
@@ -417,6 +454,12 @@ public class ConfigImpl implements Config {
 
     public String getEnumString(String path) {
         return getString(path).toUpperCase().replace(" ", "_");
+    }
+
+    public List<String> getEnumList(String path) {
+        final List<String> list = config.getStringList(path);
+        list.replaceAll(string -> Util.enumFormat(string));
+        return list;
     }
 
     public List<String> getColorList(String path) {
@@ -457,20 +500,8 @@ public class ConfigImpl implements Config {
         return new ItemBuilder(getConfig(path)).build();
     }
 
-    public List<String> getInventoryArrangement(String path) {
-        List<String> arrangement = new ArrayList<>();
-
-        for (String row : config.getStringList("menu")) {
-            for (String slot : row.split(" ")) {
-                if (arrangement.size() > 53) break;
-                arrangement.add(slot);
-            }
-        }
-
-        while (arrangement.size() == 0 || arrangement.size() % 9 != 0)
-            arrangement.add("0");
-
-        return arrangement;
+    public ItemStack getCustomItem(String path) {
+        return VoxelAPI.getCustomItem(getString(path));
     }
 
 
